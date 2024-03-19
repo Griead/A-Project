@@ -48,7 +48,7 @@ public class AStarManager
     /// 计算A星路径
     /// </summary>
     /// <returns></returns>
-    public List<AStarNode> CalculateAStarPath(NodeAxis _beginAxis,NodeAxis _endAxis)
+    public bool CalculateAStarPath(NodeAxis _beginAxis,NodeAxis _endAxis)
     {
         //计算所有周围点位
         for (int i = -1; i <= 1; i++)
@@ -71,17 +71,35 @@ public class AStarManager
 
                 _tempAxis.Y = j;
                 
-                //TODO 是否等于终点
+                //是否等于终点
+                if(_beginAxis == _endAxis)
+                    return true;
                 
                 //是否已经计算过了
                 if(OpenList.ContainsKey(_tempAxis) || CloseList.ContainsKey(_tempAxis))
                     continue;
                 
-                //TODO 开始计算权重
-                NodeMaps[_tempAxis.X, _tempAxis.Y].CalculateDistance(_beginAxis, _endAxis);
+                OpenList.Add(_tempAxis, NodeMaps[_tempAxis.X, _tempAxis.Y]);
+                //开始计算权重
+                OpenList[_tempAxis].CalculateDistance(_beginAxis, _endAxis);
             }
         }
+
+        AStarNode _tempAStarNode = null;
+        //找出距离最小的数据
+        foreach (var _nodeAxis in OpenList.Keys)
+        {
+            if (_tempAStarNode == null || OpenList[_nodeAxis].TotalDis < _tempAStarNode.TotalDis)
+            {
+                _tempAStarNode = OpenList[_nodeAxis];
+            }
+        }
+
+        //如果为空，则表示没有找到路径
+        if (_tempAStarNode == null)
+            return false;
         
-        return null;
+        CloseList.Add(new NodeAxis(_tempAStarNode.NodeAxis), _tempAStarNode);
+        return CalculateAStarPath(_tempAStarNode.NodeAxis, _endAxis);
     }
 }

@@ -17,6 +17,28 @@ public struct NodeAxis
     public int X;
     /// <summary> Y </summary>
     public int Y;
+
+    public NodeAxis(int x, int y)
+    {
+        X = x;
+        Y = y;
+    }
+
+    public NodeAxis(NodeAxis _axis)
+    {
+        X = _axis.X;
+        Y = _axis.Y;
+    }
+
+    public static bool operator ==(NodeAxis _axis1, NodeAxis _axis2)
+    {
+        return _axis1.Equals(_axis2);
+    }
+
+    public static bool operator !=(NodeAxis _axis1, NodeAxis _axis2)
+    {
+        return !(_axis1 == _axis2);
+    }
 }
 
 /// <summary>

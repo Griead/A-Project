@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,12 +12,18 @@ public enum NodeType
 /// <summary>
 /// 节点坐标
 /// </summary>
+[Serializable]
 public struct NodeAxis
 {
     /// <summary> X </summary>
     public int X;
     /// <summary> Y </summary>
     public int Y;
+
+    public override string ToString()
+    {
+        return "节点坐标" + X + Y;
+    }
 }
 
 /// <summary>
@@ -60,10 +67,15 @@ public class AStarNode
         float _beginDis = 0;
 
         if (Parent != null)
-            _beginDis += Parent.BeginDis;
+        {
+            _beginDis += Parent.BeginDis;   
+            BeginDis = (Mathf.Abs(Parent.NodeAxis.X - NodeAxis.X) + Mathf.Abs(Parent.NodeAxis.Y - NodeAxis.Y)) * 0.5f + _beginDis;
+        }
+        else
+        {
+            BeginDis = (Mathf.Abs(_beginNode.X - NodeAxis.X) + Mathf.Abs(_beginNode.Y - NodeAxis.Y)) * 0.5f ;
+        }
 
-
-        BeginDis = (Mathf.Abs(_beginNode.X - NodeAxis.X) + Mathf.Abs(_beginNode.Y - NodeAxis.Y)) * 0.5f + _beginDis;
         EndDis = Mathf.Abs(_endNode.X - NodeAxis.X) + Mathf.Abs(_endNode.Y - NodeAxis.Y);
 
         TotalDis = BeginDis + EndDis;
